@@ -11,8 +11,10 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -20,11 +22,12 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun getRetrofit():Retrofit{
+    fun getRetrofit(gson: Gson, okHttpClient: OkHttpClient):Retrofit{
         return Retrofit.Builder()
             .baseUrl("http://ws.audioscrobbler.com/2.0/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 
@@ -52,5 +55,26 @@ class DataModule {
     @Singleton
     fun getViewModelFactory(repository: Repository): ViewModelProvider.Factory {
         return ViewModelFactory(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun getRequestHeader(): OkHttpClient {
+
+        val httpClient = OkHttpClient.Builder()
+
+        httpClient.addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+            val original = chain.request().url()
+            val url = original.newBuilder().addQueryParameter("api_key", "829751643419a7128b7ada50de590067")
+                .build()
+            request.url(url)
+            return@addInterceptor chain.proceed(request.build())
+        }
+            .connectTimeout(100, TimeUnit.SECONDS)
+            .writeTimeout(100, TimeUnit.SECONDS)
+            .readTimeout(300, TimeUnit.SECONDS)
+
+        return httpClient.build()
     }
 }
