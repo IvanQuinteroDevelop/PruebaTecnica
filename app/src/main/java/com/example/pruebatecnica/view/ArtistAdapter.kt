@@ -25,7 +25,7 @@ class ArtistAdapter():RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
         val artist = listArtist[position]
 
         holder.tvItemArtist.text = artist.name
-        holder.tvItemListeners.text = "${artist.listeners} reproducciones"
+        holder.tvItemListeners.text = "${artist.listeners} Reproducciones"
 
         artist.image.forEach {
             Glide.with(holder.ivItemImage.context)
