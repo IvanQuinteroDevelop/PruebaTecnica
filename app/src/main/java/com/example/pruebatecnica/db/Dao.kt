@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.example.pruebatecnica.model.ArtistDB
+import com.example.pruebatecnica.model.TrackDB
 
 @Dao
 interface Dao {
@@ -21,5 +22,14 @@ interface Dao {
     @Query("SELECT * FROM artists_table a WHERE a.name LIKE '%' || :name || '%' ")
     fun searchArtists(name: String):List<ArtistDB>
 
+
+    @Insert(onConflict = REPLACE)
+    fun insertTracks(artist: List<TrackDB>)
+
+    @Query("SELECT * FROM track_table at ORDER BY at.attr")
+    fun getTracksFromDB(): List<TrackDB>
+
+    @Query("DELETE FROM track_table")
+    fun deleteTracks()
 
 }

@@ -8,6 +8,6 @@ import javax.inject.Inject
 
  class ViewModelFactory @Inject constructor(var repository: Repository): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(@NonNull modelClass: Class<T>): T {
-        return ArtistViewModel(repository) as T
+        return MyViewModel(repository) as T
     }
 }

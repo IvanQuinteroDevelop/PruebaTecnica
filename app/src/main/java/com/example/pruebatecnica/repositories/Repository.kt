@@ -2,8 +2,7 @@ package com.example.pruebatecnica.repositories
 
 import android.util.Log
 import com.example.pruebatecnica.db.Dao
-import com.example.pruebatecnica.model.ArtistDB
-import com.example.pruebatecnica.model.TopArtist
+import com.example.pruebatecnica.model.*
 import com.example.pruebatecnica.retrofit.APIService
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,4 +55,50 @@ class Repository @Inject constructor(var apiService: APIService, var dao: Dao) {
         return dao.searchArtists(name)
     }
 
+
+    fun getListTrack(): List<TrackDB>{
+        refreshTracks()
+        return dao.getTracksFromDB()
+    }
+
+    fun refreshTracks(){
+        apiService.getTopTracks().enqueue(object : Callback<TopTracks>{
+            override fun onFailure(call: Call<TopTracks>, t: Throwable) {
+                Log.d("tag error", t.message!!)
+            }
+
+            override fun onResponse(call: Call<TopTracks>, response: Response<TopTracks>) {
+                val listTrackDB = ArrayList<TrackDB>()
+                var artists = ""
+                var attrs = ""
+                var images = ""
+                var stremeables = ""
+                if (response.isSuccessful) {
+                    val listFromApi = response.body()!!.tracks.track
+                    listFromApi.forEach {track->
+                        track.image.forEach {image->
+                            images = image.text
+                        }
+                        attrs = track.attr.rank
+                        artists = track.artist.name
+                        stremeables = track.streamable.fulltrack
+                        listTrackDB.add(TrackDB(
+                            artists,
+                            attrs,
+                            track.duration,
+                            images,
+                            track.listeners,
+                            track.mbid,
+                            track.name,
+                            stremeables,
+                            track.url
+                        ))
+
+                        dao.deleteTracks()
+                        dao.insertTracks(listTrackDB)
+                    }
+                }
+            }
+        })
+    }
 }

@@ -10,13 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pruebatecnica.App
 import com.example.pruebatecnica.R
 import com.example.pruebatecnica.model.ArtistDB
 import com.example.pruebatecnica.view.adapters.ArtistAdapter
-import com.example.pruebatecnica.viewmodel.ArtistViewModel
+import com.example.pruebatecnica.viewmodel.MyViewModel
 import com.example.pruebatecnica.viewmodel.ViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_artist.*
 import javax.inject.Inject
 
@@ -25,7 +28,7 @@ import javax.inject.Inject
 class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     @Inject
-    lateinit var artistViewModel: ArtistViewModel
+    lateinit var myViewModel: MyViewModel
     @Inject
     lateinit var viewModelFactory : ViewModelFactory
     private lateinit var artistAdapter: ArtistAdapter
@@ -66,7 +69,7 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
     }
 
     fun observeTopArtist(){
-        artistViewModel.responseTopArtist().observe(viewLifecycleOwner, Observer<List<ArtistDB>>{listArtists->
+        myViewModel.responseTopArtist().observe(viewLifecycleOwner, Observer<List<ArtistDB>>{ listArtists->
             artistAdapter.updateData(listArtists)
         })
     }
@@ -74,8 +77,8 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
     override fun onAttach(context: Context) {
         super.onAttach(context)
         ((context as AppCompatActivity).application as App).getComponent().inject(this)
-        artistViewModel = ViewModelProvider(this, viewModelFactory).get(ArtistViewModel::class.java)
-        artistViewModel.getListArtist()
+        myViewModel = ViewModelProvider(this, viewModelFactory).get(MyViewModel::class.java)
+        myViewModel.getListArtist()
     }
 
     override fun onClose(): Boolean {
@@ -86,8 +89,8 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
         val name: String
         if (query != null && query.isNotEmpty()) {
             name = query.trim()
-            artistViewModel.searchArtist(name)
-        }else artistViewModel.getListArtist()
+            myViewModel.searchArtist(name)
+        }else myViewModel.getListArtist()
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
