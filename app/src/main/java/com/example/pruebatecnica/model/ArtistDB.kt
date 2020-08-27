@@ -1,11 +1,14 @@
 package com.example.pruebatecnica.model
 
+
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-
-data class Artist(
+@Entity(tableName = "artists_table")
+data class ArtistDB(
     @SerializedName("image")
-    val image: List<Image>,
+    val image: String?,
     @SerializedName("listeners")
     val listeners: String,
     @SerializedName("mbid")
@@ -16,4 +19,7 @@ data class Artist(
     val streamable: String,
     @SerializedName("url")
     val url: String
-)
+):Serializable{
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}

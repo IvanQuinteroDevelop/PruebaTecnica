@@ -1,7 +1,11 @@
 package com.example.pruebatecnica.di
 
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.example.pruebatecnica.db.Dao
+import com.example.pruebatecnica.db.LocalDatabase
 import com.example.pruebatecnica.repositories.Repository
 import com.example.pruebatecnica.retrofit.APIService
 import com.example.pruebatecnica.viewmodel.ViewModelFactory
@@ -47,8 +51,8 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun getRepository(apiService: APIService): Repository {
-        return Repository(apiService)
+    fun getRepository(apiService: APIService, dao: Dao): Repository {
+        return Repository(apiService, dao)
     }
 
     @Provides
@@ -76,5 +80,23 @@ class DataModule {
             .readTimeout(300, TimeUnit.SECONDS)
 
         return httpClient.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocalDatabase(context: Context): LocalDatabase {
+        return Room.databaseBuilder(
+            context,
+            LocalDatabase::class.java, "local_database"
+        )
+            .allowMainThreadQueries()
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDao(localDatabase: LocalDatabase): Dao {
+        return localDatabase.dao()
     }
 }

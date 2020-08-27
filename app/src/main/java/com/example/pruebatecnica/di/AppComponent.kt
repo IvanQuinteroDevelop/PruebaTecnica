@@ -1,6 +1,6 @@
 package com.example.pruebatecnica.di
 
-import com.example.pruebatecnica.MainActivity
+import com.example.pruebatecnica.view.activities.MainActivity
 import com.example.pruebatecnica.view.fragments.ArtistFragment
 import dagger.Component
 import javax.inject.Singleton
