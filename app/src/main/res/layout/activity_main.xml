@@ -7,44 +7,21 @@
     tools:context=".view.activities.MainActivity"
     android:orientation="vertical">
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <com.google.android.material.tabs.TabLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/tabLayout"
-        >
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Artists"
-            android:id="@+id/goToArtists"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickArtist"
-            />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tracks"
-            android:id="@+id/goToTracks"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClickTrack"
-            />
-    </com.google.android.material.tabs.TabLayout>
+        android:id="@+id/tab_layout"
+        />
 
-    <fragment
-        android:padding="@dimen/mg8"
-        android:id="@+id/fragContent"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:navGraph="@navigation/nav_graph" />
+</androidx.viewpager.widget.ViewPager>
+
 
 </LinearLayout>
