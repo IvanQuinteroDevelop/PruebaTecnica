@@ -32,4 +32,7 @@ class MyViewModel @Inject constructor(var repository: Repository): ViewModel() {
         return topTrack
     }
 
+    fun searchTrack(name: String){
+        topTrack.postValue(repository.filterTrack(name))
+    }
 }

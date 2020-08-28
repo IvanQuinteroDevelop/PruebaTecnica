@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 
 
-class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+class ArtistFragment : Fragment() {
 
     @Inject
     lateinit var myViewModel: MyViewModel
@@ -52,8 +52,12 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
         }
 
         observeTopArtist()
+        searchArtist()
 
-        svArtist.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+    }
+
+    fun searchArtist(){
+        svArtist.setOnQueryTextListener(object : SearchView.OnQueryTextListener, SearchView.OnCloseListener,
             android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 filterCharacter(query)
@@ -64,8 +68,19 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
                 filterCharacter(newText)
                 return false
             }
-        })
 
+            override fun onClose(): Boolean {
+                return true
+            }
+        })
+    }
+
+    private fun filterCharacter(query: String?){
+        val name: String
+        if (query != null && query.isNotEmpty()) {
+            name = query.trim()
+            myViewModel.searchArtist(name)
+        }else myViewModel.getListArtist()
     }
 
     fun observeTopArtist(){
@@ -81,25 +96,17 @@ class ArtistFragment : Fragment(), SearchView.OnQueryTextListener, SearchView.On
         myViewModel.getListArtist()
     }
 
-    override fun onClose(): Boolean {
-        return true
+
+
+
+    companion object{
+        fun newInstance(): ArtistFragment {
+            val args = Bundle()
+
+            val fragment = ArtistFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
-    private fun filterCharacter(query: String?){
-        val name: String
-        if (query != null && query.isNotEmpty()) {
-            name = query.trim()
-            myViewModel.searchArtist(name)
-        }else myViewModel.getListArtist()
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        filterCharacter(query)
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        filterCharacter(newText)
-        return false
-    }
 }

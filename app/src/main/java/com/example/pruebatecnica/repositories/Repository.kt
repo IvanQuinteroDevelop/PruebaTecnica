@@ -101,4 +101,8 @@ class Repository @Inject constructor(var apiService: APIService, var dao: Dao) {
             }
         })
     }
+
+    fun filterTrack(name: String):List<TrackDB>{
+        return dao.searchTrack(name)
+    }
 }

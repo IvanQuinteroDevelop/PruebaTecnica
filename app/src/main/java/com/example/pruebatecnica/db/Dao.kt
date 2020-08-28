@@ -32,4 +32,6 @@ interface Dao {
     @Query("DELETE FROM track_table")
     fun deleteTracks()
 
+    @Query("SELECT * FROM track_table a WHERE a.name LIKE '%' || :name || '%' ")
+    fun searchTrack(name: String):List<TrackDB>
 }
